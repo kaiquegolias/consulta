@@ -36,7 +36,7 @@ function buscarCliente() {
       document.getElementById("tabelaCliente").style.display = "table";
     })
     .catch(error => {
-      console.error("Erro na consulta:", error);
+      console.error("Cliente não encontrado no banco de dados, por gentileza verifique se os dados inseridos estão corrtos, caso o erro persista, pedimos que entre em contato com o suporte técnico", error);
       alert("Erro ao buscar cliente.");
     });
 }
