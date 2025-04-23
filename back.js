@@ -6,10 +6,19 @@ function buscarCliente() {
     return;
   }
 
-  fetch(`https://agilhomolog.onrender.com/${encodeURIComponent(cpfCnpj)}`)
+  // Mostrar indicador de carregamento
+  const loadingIndicator = document.getElementById("loadingIndicator");
+  if (loadingIndicator) loadingIndicator.style.display = "block";
+
+  fetch(`https://agilhomolog.onrender.com/clientes/${encodeURIComponent(cpfCnpj)}`, {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
     .then(response => {
       if (!response.ok) {
-        throw new Error("Cliente não encontrado");
+        throw new Error(response.status === 404 ? "Cliente não encontrado" : "Erro na requisição");
       }
       return response.json();
     })
@@ -17,27 +26,31 @@ function buscarCliente() {
       const tbody = document.getElementById("dadosCliente");
       tbody.innerHTML = `
         <tr>
-          <td>${cliente.nome_empresa}</td>
-          <td>${cliente.cpf_cnpj}</td>
-          <td>${cliente.telefone}</td>
-          <td>${cliente.cep}</td>
-          <td>${cliente.endereco}</td>
-          <td>${cliente.cidade}</td>
-          <td>${cliente.uf}</td>
-          <td>${cliente.email}</td>
-          <td>${cliente.concessionaria}</td>
-          <td>${cliente.unidade_consumidora}</td>
-          <td>${cliente.potencia}</td>
-          <td>${cliente.tensao_rede}</td>
-          <td>${cliente.tensao_secundaria}</td>
-          <td>${Array.isArray(cliente.tipo_subestacao) ? cliente.tipo_subestacao.join(", ") : cliente.tipo_subestacao}</td>
-          <td>${Array.isArray(cliente.forma_pagamento) ? cliente.forma_pagamento.join(", ") : cliente.forma_pagamento}</td> <!-- ✅ Aqui -->
+          <td>${cliente.nome_empresa || 'N/A'}</td>
+          <td>${cliente.cpf_cnpj || 'N/A'}</td>
+          <td>${cliente.telefone || 'N/A'}</td>
+          <td>${cliente.cep || 'N/A'}</td>
+          <td>${cliente.endereco || 'N/A'}</td>
+          <td>${cliente.cidade || 'N/A'}</td>
+          <td>${cliente.uf || 'N/A'}</td>
+          <td>${cliente.email || 'N/A'}</td>
+          <td>${cliente.concessionaria || 'N/A'}</td>
+          <td>${cliente.unidade_consumidora || 'N/A'}</td>
+          <td>${cliente.potencia || 'N/A'}</td>
+          <td>${cliente.tensao_rede || 'N/A'}</td>
+          <td>${cliente.tensao_secundaria || 'N/A'}</td>
+          <td>${Array.isArray(cliente.tipo_subestacao) ? cliente.tipo_subestacao.join(", ") : (cliente.tipo_subestacao || 'N/A')}</td>
+          <td>${Array.isArray(cliente.forma_pagamento) ? cliente.forma_pagamento.join(", ") : (cliente.forma_pagamento || 'N/A')}</td>
         </tr>
       `;
       document.getElementById("tabelaCliente").style.display = "table";
     })
     .catch(error => {
       console.error("Erro ao buscar cliente:", error);
-      alert("Cliente não encontrado no banco de dados, por gentileza verifique se os dados inseridos estão corretos. Se o erro persistir, entre em contato com o suporte técnico.");
+      alert(error.message || "Cliente não encontrado no banco de dados, por gentileza verifique se os dados inseridos estão corretos. Se o erro persistir, entre em contato com o suporte técnico.");
+    })
+    .finally(() => {
+      // Esconder indicador de carregamento
+      if (loadingIndicator) loadingIndicator.style.display = "none";
     });
 }
