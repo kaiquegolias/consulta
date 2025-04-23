@@ -10,7 +10,7 @@ function buscarCliente() {
   const loadingIndicator = document.getElementById("loadingIndicator");
   if (loadingIndicator) loadingIndicator.style.display = "block";
 
-  fetch(`https://agilhomolog.onrender.com/api/clientes${encodeURIComponent(cpfCnpj)}`, {
+  fetch(`https://agilhomolog.onrender.com/api/clientes/${encodeURIComponent(cpfCnpj)}`, {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
